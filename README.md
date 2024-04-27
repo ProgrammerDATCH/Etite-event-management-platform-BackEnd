@@ -42,6 +42,10 @@ The backend provides the following endpoints:
 - **PATCH /user/update**: Update user information
 - **DELETE /user/delete**: Delete user
 
+## Test (Mocha & Chai)
+![BackEnd Testing](https://raw.githubusercontent.com/ProgrammerDATCH/images/main/BackendTest.png)
+![BackEnd Testing](https://raw.githubusercontent.com/ProgrammerDATCH/images/main/BackEndPassedTest.png)
+
 ## Local Development
 
 To run the backend locally, follow these steps:
@@ -50,9 +54,10 @@ To run the backend locally, follow these steps:
 2. Install dependencies using `npm install`.
 3. rename `.example.env` to `.env` and add all variables values.
 3. Start the server using `npm run dev` for Development.
-4. The server will start at `http://localhost:9000/api`.
+4. The server will start at `http://localhost:9000`.
 
 ## Deployment
 
-Backend swagger documentation  `https://---.onrender.com/api-docs`.
-The backend is deployed and can be accessed at `https://---.onrender.com/api`.
+Backend swagger documentation  [https://etite-event-management-platform-backend.onrender.com/api-docs](https://etite-event-management-platform-backend.onrender.com/api-docs)
+<br>
+The backend is deployed and can be accessed at [https://etite-event-management-platform-backend.onrender.com](https://etite-event-management-platform-backend.onrender.com)
