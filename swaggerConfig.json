@@ -1,0 +1,796 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Etite Event Management Platform Backend Documentation",
+      "description": "Documentation for our backend APIs"
+    },
+    "servers": [
+      {
+        "url": "http://localhost:9000/api",
+        "description": "Local Server"
+      },
+      {
+        "url": "https://---.onrender.com/api",
+        "description": "Deployed Server"
+      }
+    ],
+    "components": {
+      "securitySchemes": {
+        "BearerAuth": {
+          "type": "http",
+          "scheme": "bearer",
+          "bearerFormat": "JWT"
+        }
+      },
+      "schemas": {
+        "AdminLogin": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "email",
+            "password"
+          ]
+        },
+        "AdminToken": {
+          "type": "object",
+          "properties": {
+            "token": {
+              "type": "string"
+            }
+          }
+        },
+        "Event": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "date": {
+              "type": "string",
+              "format": "date"
+            },
+            "location": {
+              "type": "string"
+            },
+            "image": {
+              "type": "string"
+            },
+            "maxTickets": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "title",
+            "date",
+            "location",
+            "image",
+            "maxTickets"
+          ]
+        },
+        "Ticket": {
+          "type": "object",
+          "properties": {
+            "eventId": {
+              "type": "string"
+            },
+            "amount": {
+              "type": "number"
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "PENDING",
+                "APPROVED",
+                "DECLINED"
+              ]
+            }
+          },
+          "required": [
+            "eventId",
+            "amount"
+          ]
+        },
+        "User": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "name",
+            "email",
+            "password"
+          ]
+        }
+      }
+    },
+    "paths": {
+      "/admin/login": {
+        "post": {
+          "tags": [
+            "Admin"
+          ],
+          "summary": "Login as an admin",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminLogin"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Admin logged in successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/AdminToken"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/admin/check": {
+        "post": {
+          "tags": [
+            "Admin"
+          ],
+          "summary": "Check if admin is logged in",
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Admin is logged in",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "status": {
+                        "type": "boolean",
+                        "example": true
+                      },
+                      "message": {
+                        "type": "string",
+                        "example": "Admin is logged in"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/admin/dashboard": {
+        "get": {
+          "tags": [
+            "Admin"
+          ],
+          "summary": "View all admin statistics",
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Admin statistics retrieved successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "status": {
+                        "type": "boolean",
+                        "example": true
+                      },
+                      "message": {
+                        "type": "object",
+                        "properties": {
+                          "statistics": {
+                            "type": "object"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/user/users": {
+        "get": {
+          "tags": [
+            "Admin"
+          ],
+          "summary": "View all users",
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Users retrieved successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "status": {
+                        "type": "boolean",
+                        "example": true
+                      },
+                      "message": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "userId": {
+                              "type": "string"
+                            },
+                            "email": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/event/add": {
+        "post": {
+          "tags": [
+            "Event"
+          ],
+          "summary": "Add a new event",
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Event added successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Event"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/event/update": {
+        "patch": {
+          "tags": [
+            "Event"
+          ],
+          "summary": "Update an existing event",
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Event updated successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Event"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/event/delete": {
+        "delete": {
+          "tags": [
+            "Event"
+          ],
+          "summary": "Delete an event",
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "query",
+              "required": true,
+              "schema": {
+                "type": "string"
+              },
+              "description": "ID of the event to delete"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Event deleted successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "status": {
+                        "type": "boolean"
+                      },
+                      "message": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/event/events": {
+        "get": {
+          "tags": [
+            "Event"
+          ],
+          "summary": "Get all events",
+          "responses": {
+            "200": {
+              "description": "Events retrieved successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "status": {
+                        "type": "boolean"
+                      },
+                      "message": {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/components/schemas/Event"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/ticket/add": {
+        "post": {
+          "tags": [
+            "Ticket"
+          ],
+          "summary": "Add a new ticket",
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ticket"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Ticket added successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Ticket"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/ticket/update": {
+        "patch": {
+          "tags": [
+            "Ticket"
+          ],
+          "summary": "Update an existing ticket by USER",
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ticket"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Ticket updated successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Ticket"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/ticket/updateStatus": {
+        "patch": {
+          "tags": [
+            "Ticket"
+          ],
+          "summary": "Update ticket status by ADMIN",
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ticket"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Ticket status updated successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Ticket"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/ticket/delete": {
+        "delete": {
+          "tags": [
+            "Ticket"
+          ],
+          "summary": "Delete a ticket",
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "query",
+              "required": true,
+              "schema": {
+                "type": "string"
+              },
+              "description": "ID of the ticket to delete"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Ticket deleted successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "status": {
+                        "type": "boolean"
+                      },
+                      "message": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/ticket/tickets/{eventId}": {
+        "get": {
+          "tags": [
+            "Ticket"
+          ],
+          "summary": "Get all tickets of an event",
+          "parameters": [
+            {
+              "name": "eventId",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
+              },
+              "description": "ID of the event to get tickets for"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Tickets retrieved successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "status": {
+                        "type": "boolean"
+                      },
+                      "message": {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/components/schemas/Ticket"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/user/register": {
+        "post": {
+          "tags": [
+            "User"
+          ],
+          "summary": "Register a new user",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "User registered successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/user/login": {
+        "post": {
+          "tags": [
+            "User"
+          ],
+          "summary": "Login an existing user",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string"
+                    },
+                    "password": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "email",
+                    "password"
+                  ]
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "User logged in successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "status": {
+                        "type": "boolean"
+                      },
+                      "message": {
+                        "type": "object",
+                        "properties": {
+                          "token": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/user/check": {
+        "post": {
+          "tags": [
+            "User"
+          ],
+          "summary": "Check if user is logged in by Token",
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "User is logged in",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "status": {
+                        "type": "boolean"
+                      },
+                      "message": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/user/update": {
+        "patch": {
+          "tags": [
+            "User"
+          ],
+          "summary": "Update user information",
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "User information updated successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/user/delete": {
+        "delete": {
+          "tags": [
+            "User"
+          ],
+          "summary": "Delete user",
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "User deleted successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+}
